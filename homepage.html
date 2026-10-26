@@ -2,6 +2,9 @@
 <html>
 <head>
 <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<script src="https://cdn.jsdelivr.net/npm/eruda@3.4.1/eruda.min.js"></script>
+<script>eruda.init();</script>
 <title>game</title>
 <style>
 	html, body { margin: 0; height: 100%; background: #000; color: #ccc; font: 12px monospace; overflow: hidden; }
@@ -598,6 +601,42 @@ function installInput(memory, block) {
 		if (n) { wheelAccum -= n; Atomics.add(w, DZ, n); }
 	}, { passive: false });
 }
+</script>
+<style>
+#tc{position:fixed;inset:0;pointer-events:none;z-index:99999;user-select:none;-webkit-user-select:none}
+#tc .b{position:absolute;pointer-events:auto;width:62px;height:62px;border-radius:50%;background:rgba(255,255,255,.25);border:2px solid rgba(255,255,255,.6);color:#fff;font:bold 16px sans-serif;display:flex;align-items:center;justify-content:center;touch-action:none}
+</style>
+<div id="tc"></div>
+<script>
+(function(){
+  if(!('ontouchstart' in window)) return;
+  var btns=[
+    ['▲','w','KeyW',87,'left:75px;bottom:140px'],
+    ['◀','a','KeyA',65,'left:10px;bottom:75px'],
+    ['▶','d','KeyD',68,'left:140px;bottom:75px'],
+    ['▼','s','KeyS',83,'left:75px;bottom:10px'],
+    ['SPACE',' ','Space',32,'right:90px;bottom:40px'],
+    ['E','e','KeyE',69,'right:10px;bottom:110px'],
+    ['SHIFT','Shift','ShiftLeft',16,'right:10px;bottom:30px'],
+    ['F','f','KeyF',70,'right:90px;bottom:120px']
+  ];
+  var tc=document.getElementById('tc');
+  function fire(type,k,c,kc){
+    var e=new KeyboardEvent(type,{key:k,code:c,keyCode:kc,which:kc,bubbles:true,cancelable:true});
+    document.dispatchEvent(e);
+  }
+  btns.forEach(function(b){
+    var d=document.createElement('div');
+    d.className='b';d.textContent=b[0];d.style.cssText=b[4];
+    var down=function(e){e.preventDefault();d.style.background='rgba(255,255,255,.55)';fire('keydown',b[1],b[2],b[3]);};
+    var up=function(e){e.preventDefault();d.style.background='';fire('keyup',b[1],b[2],b[3]);};
+    d.addEventListener('pointerdown',down);
+    d.addEventListener('pointerup',up);
+    d.addEventListener('pointercancel',up);
+    d.addEventListener('pointerleave',up);
+    tc.appendChild(d);
+  });
+})();
 </script>
 </body>
 </html>
